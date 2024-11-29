@@ -13,6 +13,9 @@ class Stapel():
 
     def currentcard(self):
         return self.lastplayedcard
+    
+    def currentcardaktiv(self):
+        return self.lastplayedcardactiv
 
     def currenteffect(self):
         return self.lastplayedcard.getEffect()
@@ -27,9 +30,10 @@ class Stapel():
         
         player.addCards(cards)
 
-    def putdown(self,card):
+    def putdown(self,card,user):
         self.lastplayedcard = card
         self.rest.append(card)
+        user.setpassive()
 
     def special(self):
         self.lastplayedcard = False

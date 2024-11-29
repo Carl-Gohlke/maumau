@@ -80,11 +80,12 @@ def startgame(stapel):
     
     for b in range(0,len(user)):
         user[b].setactive()
-        while user[b].getstatus() == True:
+        if user[b].getstatus() == True:
             print(f"Aktive Karte: {stapel.currentcard().getInfo()}")
             user[b].allgemeincheck(stapel)
-            if b == len(user):
-                b = 0
+            
+        if b == len(user):
+            b = 0
 
     
 

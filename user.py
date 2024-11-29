@@ -15,7 +15,11 @@ class User():
         self.karten += cards
     
     def setactive(self):
+        print(f"{self.name} ist jetzt Aktiv #Debug")
         self.aktiv = True
+    
+    def setpassive(self):
+        self.aktiv = False
 
     def getstatus(self):
         return self.aktiv
@@ -55,7 +59,7 @@ class User():
 
         karte = int(input("Welche Karte wollen sie waehlen?\n"))-1
         if self.karten[karte].getArt() == stapel.currentcard().getArt():
-            stapel.putdown(self.karten[karte])
+            stapel.putdown(self.karten[karte],self)
             if self.karten[karte].getArt() == "B":
                 for i in art:
                     counterb += 1
@@ -63,10 +67,12 @@ class User():
                     print(f"counterb) {i}")
                     kind = int(input()) -1
                     stapel.wish(art[kind])
-            self.aktiv = False
+            self.karten.remove(self.karten[karte])
+            self.setpassive()
         elif self.karten[karte].getWert() == stapel.currentcard().getWert():
-            stapel.putdown(self.karten[karte])
-            self.aktiv = False
+            stapel.putdown(self.karten[karte],self)
+            self.karten.remove(self.karten[karte])  
+            self.setpassive()  
         else: 
             print("Karte passt nicht bitte legen sie eine andere Karte")
             self.choosecards(stapel)
@@ -74,8 +80,33 @@ class User():
 
         
     def allgemeincheck(self,stapel):
-        if stapel.currenteffect() == "None" or "Wish":
+        print("checkstart DEbug")
+        print(stapel.currentcardaktiv())
+        if stapel.currentcardaktiv() == True:
+            print("Spezialkarte Check aktiv")
+            if stapel.currenteffect() == "None" or "Wish":
+                check = False
+                for i in self.karten:
+                    print("Check1")
+                    if i.getArt() == stapel.currentcard().getArt():
+                        check = False
+                    elif i.getWert() == stapel.currentcard().getWert():
+                        check = False
+                    else: 
+                        check = True
+                        stapel.drawcard(self,1)
+
+
+                if check == False:
+                    self.choosecards(stapel)
+            elif stapel.currentcard().getEffect() == "Skip":
+                self.skip(stapel)
+            elif stapel.currentcard().getEffect() == "Draw":
+                self.drawcheck(stapel)
+        else:
             check = False
+            print("check aktiv normal card")
+            print("2")
             for i in self.karten:
                 if i.getArt() == stapel.currentcard().getArt():
                     check = False
@@ -85,13 +116,9 @@ class User():
                     check = True
                     stapel.drawcard(self,1)
 
+                if check == False:
+                    self.choosecards(stapel)
 
-            if check == False:
-                self.choosecards(stapel)
-        elif stapel.currentcard().getEffect() == "Skip":
-            self.skip(stapel)
-        elif stapel.currentcard().getEffect() == "Draw":
-            self.drawcheck(stapel)
 
 
 
