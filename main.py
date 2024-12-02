@@ -1,129 +1,129 @@
-#imports
-from user import *
+from stapel import *
 from karten import *
-from stapel import Stapel
-import time
-import random
+from user import *
+import time as t
 
-#Variablen
-blatt = []
+#predefinitionen
+
+arten = ['Herz','Karo','Pik','Kreuz']
+werte = ['7','8','9','10','B','D','K','A']
+deck = []
 user = []
-min_user = 2
-max_user = 6
-amountplaycards = 0
+rangliste = []
 
-#Karten Gen
 
-def kartengen():
-    art = ["Kreuz","Pik", "Karo", "Herz"]
-    wert = ["7","8","9","10","B","D","K","A"]
-    effekt = ["skip","wish","draw"]
-    for i in art:
-        for u in wert:
-            if u == 7:
-                new_karte = Spezialkarte(i,u,effekt[2])
-                blatt.append(new_karte)
-            elif u == "B":
-                new_karte = Spezialkarte(i,u,effekt[1])
-                blatt.append(new_karte)
-            elif u == "A":
-                new_karte = Spezialkarte(i,u,effekt[0])
-                blatt.append(new_karte)
+
+
+
+
+#funktionen
+
+def game():
+    i = 0
+    while len(user) >= 2:
+        user[i].set_active()
+        while user[i].get_status():
+            print(user[i].get_name())
+            print(f"Oberste Karte: {new_stapel.last_card().get_kartenname()}")
+            user[i].possible_cards_clear()
+            for karte in user[i].get_hand():
+                karte.karte_check(new_stapel,user[i])
+            if len(user[i].get_possbile_cards()) == 0:
+                new_stapel.draw_cards(user[i],1)
+                print("Du kannst keine Karte legen.\nDu hast eine Karte gezogen.\nDer nächste Spieler ist dran.")
+                user[i].set_passive()
             else:
-                new_karte = Spezialkarte(i,u,"None")
-                blatt.append(new_karte)
+                print(f"Deine Hand:\n")
+                for o in user[i].get_hand():
+                    print(o.get_kartenname())
+                print("Du kannst folgende Karten legen:\n")
+                counter = 1
+                for b in user[i].get_possbile_cards():
+                    print(f"Nr.{counter} {b.get_kartenname()}")
+                    counter +=1
+                user[i].choosecard(new_stapel)
+                if len(user[i].get_hand()) == 0:
+                    rangliste.append(user[i])
+                    user.remove(user[i])
 
+        i+=1
+                
+                
+        if i == len(user): 
+            i = 0
+        print(i)
 
-
+    if len(user) <= 1:
+        rangliste.append(user[0])
+        print("Das Spiel ist zu Ende.")
+        for c in range(0,len(rangliste)):
+            print(f"Platz: {c+1}) rangliste{c}")
 
             
-            
 
 
+#genfunktionen
+def gen_karten():
+    for art in arten:
+        for wert in werte:
+            if wert != 'B' or '7' or 'A':
+                kartenname = art + " " + wert
+                new_card = Karte(art,wert,kartenname)
+                deck.append(new_card)
+            elif wert == 'B':
+                kartenname = art + " " + wert
+                new_specialcard = Spezialkarte(art,wert,kartenname,'w')
+                deck.append(new_specialcard)
+            elif wert == 'A':
+                kartenname = art + " " + wert
+                new_specialcard = Spezialkarte(art,wert,kartenname,'a')
+                deck.append(new_specialcard)
+            elif wert == '7':
+                kartenname = art + " " + wert
+                new_specialcard = Spezialkarte(art,wert,kartenname,'d')
+                deck.append(new_specialcard)
 
-
-
-
-#Spieler Gen
-
-def spielergen():
-    anzahl_user = int(input("Spieleranzahl (min.2 | max. 8):\n"))
-    if anzahl_user >= min_user and anzahl_user <= max_user:
-        for i in range(0,anzahl_user):
-            name = input(f"Spieler {i+1}) Name:\n")
-            new_user = User(name)
-            user.append(new_user)
-    else:
-        print("E R R O R\nSpielergeneration begint von vorne\n.\n..\n...")
-        time.sleep(5)
-        for u in range(0,1000):
-            print("\n")
-        spielergen()
-    random.shuffle(user)
-
-
-#Spielfunktionen
-def startgame(stapel):
-    for i in range(0,1000):
-        print("\n")
-    print("Das ist die Reinfolge")
-    for u in range(0,len(user)):
-        print(f"{u+1}) {user[u].getName()}")
-    print("Das Spiel beginnt in 5 sek.")
-    for a in range(0,4):
-        punkt = "."
-        print(punkt*(a+1))
-        time.sleep(1)
-    for c in range(0,1000):
-        print("\n")
-
-    
-    for b in range(0,len(user)):
-        user[b].setactive()
-        if user[b].getstatus() == True:
-            print(f"Aktive Karte: {stapel.currentcard().getInfo()}")
-            user[b].allgemeincheck(stapel)
-            user[b].setpassive()
-            
-            if b == len(user):
-                b = 0
 
     
 
+def gen_user(player_count):
+    print("Geben sie die Namen ein\n")
+    for i in range(0,player_count):
+        name = input(f"Nutzer {i+1}: \n")
+        new_user = User(name)
+        user.append(new_user)
 
+#spielaufbau
 
+def first_austeilen(spielkarten_anzahl):
+    for nutzer in user:
+        new_stapel.frist_draw_cards(nutzer,spielkarten_anzahl)
+    new_stapel.first_card_down()
+    game()
 
+    
 
+def draw_card(spielkarten_anzahl):
+    for nutzer in user:
+        new_stapel.draw_cards(nutzer,spielkarten_anzahl)
 
+def game_start():
+    anzahl_spielkarten = int(input("Spielkartenanzahl: \n"))-1
+    if len(arten) * len(werte) <= anzahl_spielkarten * len(user):
+        print(f"E R R O R\n Zu wenig Karten im Spielblatt\nJeder Spieler kann maximl {int(31/len(user))} Karten haben")
+        game_start()
+    else: 
+        first_austeilen(anzahl_spielkarten)
 
-def amountcards(stapel):
-    amountplaycards = int(input("Mit wie vielen Karten soll gespielt werden?\n"))
-    if len(user) * amountplaycards >= len(blatt):
-        print("E R R O R\nZu wenig Karten im Blatt\nBitte erneut eingeben")
-        amountcards(stapel)
-    elif amountplaycards == 0:
-        print("E R R O R\nmin. eine Karte muss jeder Spieler haben\nBitte erneut eingeben")
-        amountcards(stapel)
-    else:
-        for i in user:
-            stapel.drawcard(i,amountplaycards)
-
-
-def genfuncktion():
-    spielergen()
-    kartengen()
-    stapel = Stapel(blatt)
-    amountcards(stapel)
-    stapel.firstcard()
-    startgame(stapel)
+        
         
 
-
-
-#Spielgen
-
-genfuncktion()
-
+player_count = int(input("Spieleranzahl:\n"))
+gen_user(player_count)
+gen_karten()
+new_stapel = Ziehstapel(deck)
+game_start()
+t.sleep(30)
 
 
 

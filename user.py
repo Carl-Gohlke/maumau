@@ -1,137 +1,58 @@
-from karten import *
-from stapel import Stapel
-art = ["Kreuz","Pik", "Karo", "Herz"]
 class User():
     def __init__(self,name):
         self.name = name
-        self.aktiv = False
-        self.gewonnen = False
-        self.karten = []
+        self.hand = []
+        self.possible_cards = []
+        self.active = False
 
-    def getName(self):
+    def set_active(self):
+        self.active = True
+    
+    def set_passive(self):
+        self.active = False
+
+    def get_status(self):
+        return self.active
+
+    def possible_cards_append(self,card):
+        self.possible_cards.append(card)
+
+    def get_possbile_cards(self):
+        return self.possible_cards
+    
+    def add_card(self,card):
+        self.hand.append(card)
+
+    def get_hand(self):
+        return self.hand
+    
+    def get_name(self):
         return self.name
     
-    def addCards(self,cards):
-        self.karten += cards
-    
-    def setactive(self):
-        print(f"{self.name} ist jetzt Aktiv #Debug")
-        self.aktiv = True
-    
-    def setpassive(self):
-        self.aktiv = False
-
-    def getstatus(self):
-        return self.aktiv
-    
-    def skip(self,stapel):
-        self.aktiv = False
-        stapel.special()
-    
-    def drawcheck(self, stapel):
-        draw = True
-        for i in self.karten:
-            while draw == True:
-                if i.getWert() != "7":
-                    draw = True
-                else:
-                    draw = False
-                    print("Moechten sie ziehen?\n")
-                    possiblecard = i
-                    check = input("Ja/Nein")
-        if check.lower() == "nein":
-            stapel.putdown(possiblecard)
-            self.aktiv = False
-        else:
-            stapel.drawcard(self,2)
-            self.aktiv = False
+    def makewisch(self,stapel,card):
+        arten = ['Herz','Karo','Pik','Kreuz']
+        print(f"Wählen sie eine Art.\n")
+        for art in arten:
+            print(art)
+        choose = input()
+        self.hand.remove(self.possible_cards[card])
+        self.possible_cards[card].set_art(choose)
+        self.possible_cards[card].set_wert('0')
+        stapel.card_put_down(self.possible_cards.pop(card),self)
         
-
-                    
-
-
-    def choosecards(self,stapel):
-        counter=0
-        counterb = 0
-        for i in self.karten:
-            counter +=1
-            print(f"Dein Karten\n {counter, i.getInfo()}")
-
-        karte = int(input("Welche Karte wollen sie waehlen?\n"))-1
-        if self.karten[karte].getArt() == stapel.currentcard().getArt():
-            stapel.putdown(self.karten[karte],self)
-            if self.karten[karte].getArt() == "B":
-                for i in art:
-                    counterb += 1
-                    print(f"Was wuenschen sie sich?\n")
-                    print(f"counterb) {i}")
-                    kind = int(input()) -1
-                    stapel.wish(art[kind])
-            self.karten.remove(self.karten[karte])
-            self.setpassive()
-        elif self.karten[karte].getWert() == stapel.currentcard().getWert():
-            stapel.putdown(self.karten[karte],self)
-            self.karten.remove(self.karten[karte])  
-            self.setpassive()  
+    
+    def choosecard(self,new_stapel):
+        card = int(input("Wählen sie eine Karten Nr. aus:\n"))-1
+        print(self.possible_cards[card].get_wert())
+        if self.possible_cards[card].get_wert() == 'B':
+            self.makewisch(new_stapel,card)
         else: 
-            print("Karte passt nicht bitte legen sie eine andere Karte")
-            self.choosecards(stapel)
-
-
+            print("Test")
+            self.hand.remove(self.possible_cards[card])
+            new_stapel.card_put_down(self.possible_cards.pop(card),self)
         
-    def allgemeincheck(self,stapel):
-        print("checkstart DEbug")
-        print(stapel.currentcardaktiv())
-        if stapel.currentcardaktiv() == True:
-            print("Spezialkarte Check aktiv")
-            if stapel.currenteffect() == "None" or "wish":
-                check = False
-                for i in self.karten:
-                    print("Check1")
-                    if i.getArt() == stapel.currentcard().getArt():
-                        check = False
-                    elif i.getWert() == stapel.currentcard().getWert():
-                        check = False
-                    else: 
-                        check = True
-                        stapel.drawcard(self,1)
+    
+    def possible_cards_clear(self):
+        self.possible_cards = []
 
-
-                if check == False:
-                    self.choosecards(stapel)
-            elif stapel.currentcard().getEffect() == "Skip":
-                self.skip(stapel)
-            elif stapel.currentcard().getEffect() == "Draw":
-                self.drawcheck(stapel)
-        else:
-            check = False
-            print("check aktiv normal card")
-            for i in self.karten:
-                if i.getArt() == stapel.currentcard().getArt():
-                    check = False
-                    break
-                elif i.getWert() == stapel.currentcard().getWert():
-                    check = False
-                    break
-                else: 
-                    check = True
-                    
-
-            if check == False:
-                self.choosecards(stapel)
-            else:
-                stapel.drawcard(self,1)
-                print("Drawcard")
-
-
-
-
-        
-            
-        
-
-        
-        
-
-        
 
