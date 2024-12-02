@@ -84,7 +84,7 @@ class User():
         print(stapel.currentcardaktiv())
         if stapel.currentcardaktiv() == True:
             print("Spezialkarte Check aktiv")
-            if stapel.currenteffect() == "None" or "Wish":
+            if stapel.currenteffect() == "None" or "wish":
                 check = False
                 for i in self.karten:
                     print("Check1")
@@ -106,18 +106,22 @@ class User():
         else:
             check = False
             print("check aktiv normal card")
-            print("2")
             for i in self.karten:
                 if i.getArt() == stapel.currentcard().getArt():
                     check = False
+                    break
                 elif i.getWert() == stapel.currentcard().getWert():
                     check = False
+                    break
                 else: 
                     check = True
-                    stapel.drawcard(self,1)
+                    
 
-                if check == False:
-                    self.choosecards(stapel)
+            if check == False:
+                self.choosecards(stapel)
+            else:
+                stapel.drawcard(self,1)
+                print("Drawcard")
 
 
 

@@ -1,5 +1,5 @@
 #imports
-from user import User
+from user import *
 from karten import *
 from stapel import Stapel
 import time
@@ -83,9 +83,10 @@ def startgame(stapel):
         if user[b].getstatus() == True:
             print(f"Aktive Karte: {stapel.currentcard().getInfo()}")
             user[b].allgemeincheck(stapel)
+            user[b].setpassive()
             
-        if b == len(user):
-            b = 0
+            if b == len(user):
+                b = 0
 
     
 
@@ -99,10 +100,10 @@ def amountcards(stapel):
     amountplaycards = int(input("Mit wie vielen Karten soll gespielt werden?\n"))
     if len(user) * amountplaycards >= len(blatt):
         print("E R R O R\nZu wenig Karten im Blatt\nBitte erneut eingeben")
-        amountcards()
+        amountcards(stapel)
     elif amountplaycards == 0:
         print("E R R O R\nmin. eine Karte muss jeder Spieler haben\nBitte erneut eingeben")
-        amountcards()
+        amountcards(stapel)
     else:
         for i in user:
             stapel.drawcard(i,amountplaycards)

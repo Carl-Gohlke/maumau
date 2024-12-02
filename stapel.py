@@ -1,5 +1,6 @@
 import random 
 from karten import *
+from user import *
 
 class Stapel():
     def __init__(self,blatt):
@@ -24,11 +25,13 @@ class Stapel():
         cards = []
 
         for i in range(0,amount):
-            cards.append(self.blatt[i])
-        for u in range(amount,0):
-            self.blatt.remove(u)
-        
+            print(i)
+            cards.append(self.blatt.pop(0))
+            
+            
+        print(cards)
         player.addCards(cards)
+        player.setpassive()
 
     def putdown(self,card,user):
         self.lastplayedcard = card
