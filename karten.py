@@ -1,27 +1,51 @@
+from stapel import *
+from user import *
 class Karte():
-    def __init__(self,art,wert):
+    def __init__(self,art,wert,kartenname):
         self.art = art
         self.wert = wert
+        self.kartenname = kartenname
+        self.possible_karte = []
+
+
+    def get_kartenname(self):
+        return self.kartenname
     
+    def karte_check(self,stapel,user):
+        if stapel.last_card().wert !='7':
+            if self.art == stapel.last_card().art or self.wert == stapel.last_card().wert:
+                if self.wert == 'B'and stapel.last_card().wert == 'B':
+                    pass
+                else:
+                    user.possible_cards_append(self)
+        else:
+            if self.wert == '7':
+                user.possible_cards_append(self)
+
+    def get_art(self):
+        return self.art
     
+    def get_wert(self):
+        return self.wert
+    
+    def set_art(self,art):
+        self.art = art
+    
+    def set_wert(self,wert):
+        self.wert = wert
+
 
 
 class Spezialkarte(Karte):
-    def __init__(self,art,wert,effekt):
-        super().__init__(art,wert)
+    def __init__(self,art,wert,kartenname,effekt):
+        super().__init__(art,wert,kartenname)
         self.effekt = effekt
 
-    def getInfo(self):
-        if self.effekt == "None":
-            return self.art,self.wert
-        else:
-            return self.art, self.wert, self.effekt
-    
-    def getArt(self):
-        return self.art
-    
-    def getWert(self):
-        return self.wert
 
-    def getEffect(self):
+    def get_effect(self):
         return self.effekt
+
+
+
+
+
