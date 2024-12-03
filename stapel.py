@@ -20,9 +20,10 @@ class Ziehstapel():
             self.rest.append(lastcard)
     
         
-        i = 0
+        i = 1
         while i <= amount:
-            user.add_card(self.deck.pop(0))
+            user.add_card(self.deck[i])
+            self.deck.remove(self.deck[i])
             i += 1
 
     def frist_draw_cards(self,user,amount):
@@ -32,9 +33,9 @@ class Ziehstapel():
             i += 1
 
     def card_put_down(self,card,user):
-        print(card)
         self.rest.append(card)
         user.set_passive()
+        
     
     def first_card_down(self):
         self.rest.append(self.deck.pop(0))

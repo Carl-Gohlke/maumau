@@ -4,23 +4,35 @@ class Karte():
     def __init__(self,art,wert,kartenname):
         self.art = art
         self.wert = wert
-        self.kartenname = kartenname
+        self.kartenname = self.art + " " + self.wert
         self.possible_karte = []
 
 
     def get_kartenname(self):
         return self.kartenname
     
+
+    
     def karte_check(self,stapel,user):
-        if stapel.last_card().wert !='7':
+        print(f"Aktueller Effekt {stapel.get_active()}")
+        if stapel.get_active() == 'd':
+            print("siebencheck")
+            if self.wert == '7':
+                user.possible_cards_append(self)
+        elif stapel.get_active() == 's':
+            stapel.set_active_effect(None)
+            user.set_passiv()
+        elif stapel.last_card().wert != 'A':
             if self.art == stapel.last_card().art or self.wert == stapel.last_card().wert:
                 if self.wert == 'B'and stapel.last_card().wert == 'B':
                     pass
                 else:
                     user.possible_cards_append(self)
-        else:
-            if self.wert == '7':
-                user.possible_cards_append(self)
+
+
+
+
+
 
     def get_art(self):
         return self.art
