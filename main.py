@@ -22,8 +22,6 @@ def game():
     i = 0
     sieben = 0
     while len(user) >= 2:
-        if i == len(user)-1: 
-            i = 0
         user[i].set_active()
         while user[i].get_status():
             if new_stapel.get_active() != 'd':
@@ -79,15 +77,13 @@ def game():
                     if len(user[i].get_hand()) == 0:
                         rangliste.append(user[i])
                         user.remove(user[i])
-                i+=1
+            i+=1
+            if i == len(user): 
+                i = 0
 
              
 
-        i+=1
-                    
-                    
-        if i == len(user): 
-            i = 0
+
 
 
 
@@ -160,6 +156,7 @@ player_count = int(input("Spieleranzahl:\n"))
 gen_user(player_count)
 gen_karten()
 new_stapel = Ziehstapel(deck)
+
 game_start()
 t.sleep(30)
 

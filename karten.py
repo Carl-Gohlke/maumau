@@ -14,9 +14,7 @@ class Karte():
 
     
     def karte_check(self,stapel,user):
-        print(f"Aktueller Effekt {stapel.get_active()}")
         if stapel.get_active() == 'd':
-            print("siebencheck")
             if self.wert == '7':
                 user.possible_cards_append(self)
         elif stapel.get_active() == 's':
@@ -28,6 +26,10 @@ class Karte():
                     pass
                 else:
                     user.possible_cards_append(self)
+        elif stapel.get_active() == 'a':
+            print("Du musst ausetzen.")
+            stapel.set_active_effect(None)
+            user.set_passive()
 
 
 

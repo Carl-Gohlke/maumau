@@ -2,7 +2,7 @@ from karten import *
 import random as r
 class Ziehstapel():
     def __init__(self,deck):
-        self.deck = deck
+        self.deck = deck[:]
         self.rest = []
         r.shuffle(self.deck)
         self.active_effect = None
@@ -12,19 +12,15 @@ class Ziehstapel():
         return self.rest[len(self.rest)-1]
     
     def draw_cards(self,user,amount):
-        print(len(self.deck)-amount)
         if (len(self.deck)-1) <= amount:
             lastcard = self.rest[(len(self.rest)-1)]
-            print(lastcard)
             self.deck = r.shuffle(self.rest)
             self.rest.append(lastcard)
     
         
-        i = 1
-        while i <= amount:
-            user.add_card(self.deck[i])
-            self.deck.remove(self.deck[i])
-            i += 1
+        for i in range(amount):
+            print(len(self.deck))
+            user.add_card(self.deck.pop(0))
 
     def frist_draw_cards(self,user,amount):
         i = 0
