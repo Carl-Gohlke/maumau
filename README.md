@@ -1,7 +1,3 @@
-Hier ist eine ausführliche und aktualisierte README-Datei für dein Mau-Mau-Repository basierend auf den implementierten Änderungen und der Logik, die du beschrieben hast:
-
----
-
 # MauMau
 
 Ein Python-basiertes Kartenspiel, das die Regeln des klassischen Mau-Mau-Spiels implementiert. Es unterstützt Spezialkarten wie Bube, Ass und 7, um ein authentisches Spielerlebnis zu gewährleisten.
@@ -146,3 +142,8 @@ Beitragen kannst du durch:
 - Bugfixes.
 
 Erstelle dazu einen Pull Request auf GitHub.
+
+
+---
+
+ReadMe wurde von ChatGPT erstellt.
