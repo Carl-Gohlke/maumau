@@ -56,38 +56,38 @@ def game():
                 new_stapel.set_active_effect(None)
                 break
 
-            
-            for karte in user[i].get_hand():
-                karte.karte_check(new_stapel, user[i])
-            
-            if len(user[i].get_possible_cards()) == 0:
-                print("Du kannst keine Karte legen. Ziehe eine Karte.")
-                new_stapel.draw_cards(user[i], 1)
-                user[i].set_passive()
-                t.sleep(2)
-                continue
+            else:
+                for karte in user[i].get_hand():
+                    karte.karte_check(new_stapel, user[i])
+                
+                if len(user[i].get_possible_cards()) == 0:
+                    print("Du kannst keine Karte legen. Ziehe eine Karte.")
+                    new_stapel.draw_cards(user[i], 1)
+                    user[i].set_passive()
+                    t.sleep(2)
+                    continue
 
-            
-            print("Deine Hand:")
-            for idx, karte in enumerate(user[i].get_hand(), start=1):
-                print(f"{idx}. {karte.get_kartenname()}")
-            
-            print("\nMögliche Karten:")
-            for crd in user[i].get_possible_cards():
-                lastcard = new_stapel.last_card()
-                if lastcard.get_wert() == 'B' and crd.get_wert() == 'B':
-                    user[i].remove_possible_card(crd)
-            for idx, karte in enumerate(user[i].get_possible_cards(), start=1):
-                print(f"{idx}. {karte.get_kartenname()}")
+                
+                print("Deine Hand:")
+                for idx, karte in enumerate(user[i].get_hand(), start=1):
+                    print(f"{idx}. {karte.get_kartenname()}")
+                
+                print("\nMögliche Karten:")
+                for crd in user[i].get_possible_cards():
+                    lastcard = new_stapel.last_card()
+                    if lastcard.get_wert() == 'B' and crd.get_wert() == 'B':
+                        user[i].remove_possible_card(crd)
+                for idx, karte in enumerate(user[i].get_possible_cards(), start=1):
+                    print(f"{idx}. {karte.get_kartenname()}")
 
-            user[i].choosecard(new_stapel)
-            
-            if len(user[i].get_hand()) == 0:
-                print(f"\n{user[i].get_name()} hat gewonnen!")
-                rangliste.append(user[i])
-                user.pop(i)
-                t.sleep(2)
-                break
+                user[i].choosecard(new_stapel)
+                
+                if len(user[i].get_hand()) == 0:
+                    print(f"\n{user[i].get_name()} hat gewonnen!")
+                    rangliste.append(user[i])
+                    user.pop(i)
+                    t.sleep(2)
+                    break
 
         print(f"\nZug von {user[i].get_name()} ist beendet.")
         print("Der nächste Spieler ist in 4 Sekunden dran...")

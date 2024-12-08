@@ -17,11 +17,9 @@ class Ziehstapel():
             self.deck = self.rest[:]
             r.shuffle(self.deck)
             self.rest = [lastcard]
-    
-        
-        for i in range(amount):
-            print(len(self.deck))
-            user.add_card(self.deck.pop(0))
+        else:   
+            for i in range(amount):
+                user.add_card(self.deck.pop(0))
 
     def first_draw_cards(self,user,amount):
         for _ in range(amount):
