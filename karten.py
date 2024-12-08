@@ -16,15 +16,13 @@ class Karte():
     def karte_check(self,stapel,user):
         if stapel.get_active() == 'd':
             if self.wert == '7':
+                print(self.kartenname)
                 user.possible_cards_append(self)
         elif stapel.get_active() == 's':
             stapel.set_active_effect(None)
             user.set_passiv()
-        elif stapel.last_card().wert != 'A':
+        elif stapel.get_active() != 's':
             if self.art == stapel.last_card().art or self.wert == stapel.last_card().wert:
-                if self.wert == 'B'and stapel.last_card().wert == 'B':
-                    pass
-                else:
                     user.possible_cards_append(self)
         elif stapel.get_active() == 'a':
             print("Du musst ausetzen.")

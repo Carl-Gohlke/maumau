@@ -1,7 +1,8 @@
+import os
+import time as t
 from stapel import *
 from karten import *
 from user import *
-import time as t
 
 
 #predefinitionen
@@ -14,74 +15,94 @@ rangliste = []
 
 
 
+def clear_console():
+    """Clears the console for better readability between turns."""
+    os.system('cls' if os.name == 'nt' else 'clear')
 
-
-
-#funktionen
 
 def game():
     i = 0
-    sieben = 0
     while len(user) >= 2:
+        clear_console()
+        print(f"\nSpieleranzahl: {len(user)} | Aktive Spieler: {[u.get_name() for u in user]}")
         user[i].set_active()
+        
         while user[i].get_status():
-            if new_stapel.get_active() != 'd':
-                if new_stapel.get_active() != 'a':
-                    print(f"{user[i].get_name()} ist dran.")
-                    print(f"Oberste Karte: {new_stapel.last_card().get_kartenname()}")
-                    user[i].possible_cards_clear()
-                    for karte in user[i].get_hand():
-                        karte.karte_check(new_stapel,user[i])
-                    if len(user[i].get_possible_cards()) == 0:
-                        new_stapel.draw_cards(user[i],1)
-                        print("Du kannst keine Karte legen.\nDu hast eine Karte gezogen.\nDer nächste Spieler ist dran.")
-                        user[i].set_passive()
-                    else:
-                        print(f"Deine Hand:\n")
-                        for o in user[i].get_hand():
-                            print(o.get_kartenname())
-                        print("Du kannst folgende Karten legen:\n")
-                        counter = 1
-                        for b in user[i].get_possible_cards():
-                            print(f"Nr.{counter} {b.get_kartenname()}")
-                            counter +=1
-                        user[i].choosecard(new_stapel)
-                        if len(user[i].get_hand()) == 0:
-                            rangliste.append(user[i])
-                            user.pop(i)
-                            i -= 1
-                else:
-                    user[i].set_passive()
-                    new_stapel.set_active_effect(None)
-                    break
+            print(f"{user[i].get_name()} ist dran.\n")
+            print(f"Oberste Karte: {new_stapel.last_card().get_kartenname()}\n")
+            
+            user[i].possible_cards_clear()
+
+            if new_stapel.get_active() == 'd':
+                sieben +=1
             else:
-                sieben += 1
-                print(f"{user[i].get_name()} ist dran.")
-                print(f"Oberste Karte: {new_stapel.last_card().get_kartenname()}")
+                sieben = 0
+
+            if new_stapel.get_active() == 'd':
                 user[i].possible_cards_clear()
-                for karte in user[i].get_hand():
-                    karte.karte_check(new_stapel,user[i])
+                karte.karte_check(new_stapel, user[i])
+
                 if len(user[i].get_possible_cards()) == 0:
-                    new_stapel.draw_cards(user[i],sieben*2)
-                    print(f"Du hast keine 7 du musst {sieben*2} Karten ziehen.")
-                    user[i].set_passive()
+                    print(f"Du hast keine 7. Du musst {sieben*2} Karten ziehen.")
+                    new_stapel.draw_cards(user[i], 1)
                     new_stapel.set_active_effect(None)
-                else:
-                    print(f"Deine Hand:\n")
-                    for o in user[i].get_hand():
-                        print(o.get_kartenname())
-                    print("Du kannst folgende Karten legen:\n")
-                    counter = 1
-                    for b in user[i].get_possible_cards():
-                        print(f"Nr.{counter} {b.get_kartenname()}")
-                        counter +=1
-                    user[i].choosecard(new_stapel)
-                    if len(user[i].get_hand()) == 0:
-                        rangliste.append(user[i])
-                        user.remove(user[i])
-            i+=1
-            if i == len(user): 
-                i = 0
+                    user[i].set_passive()
+                    t.sleep(2)
+                    continue
+
+            elif new_stapel.get_active() == 'a':
+                print("Du musst aussetzen.")
+                user[i].set_passive()
+                new_stapel.set_active_effect(None)
+                break
+
+            
+            for karte in user[i].get_hand():
+                karte.karte_check(new_stapel, user[i])
+            
+            if len(user[i].get_possible_cards()) == 0:
+                print("Du kannst keine Karte legen. Ziehe eine Karte.")
+                new_stapel.draw_cards(user[i], 1)
+                user[i].set_passive()
+                t.sleep(2)
+                continue
+
+            
+            print("Deine Hand:")
+            for idx, karte in enumerate(user[i].get_hand(), start=1):
+                print(f"{idx}. {karte.get_kartenname()}")
+            
+            print("\nMögliche Karten:")
+            for crd in user[i].get_possible_cards():
+                lastcard = new_stapel.last_card()
+                if lastcard.get_wert() == 'B' and crd.get_wert() == 'B':
+                    user[i].remove_possible_card(crd)
+            for idx, karte in enumerate(user[i].get_possible_cards(), start=1):
+                print(f"{idx}. {karte.get_kartenname()}")
+
+            user[i].choosecard(new_stapel)
+            
+            if len(user[i].get_hand()) == 0:
+                print(f"\n{user[i].get_name()} hat gewonnen!")
+                rangliste.append(user[i])
+                user.pop(i)
+                t.sleep(2)
+                break
+
+        print(f"\nZug von {user[i].get_name()} ist beendet.")
+        print("Der nächste Spieler ist in 4 Sekunden dran...")
+        t.sleep(4)
+        
+        i += 1
+        if i >= len(user):
+            i = 0
+
+    clear_console()
+    print("Das Spiel ist zu Ende.")
+    print("Rangliste:")
+    for platz, spieler in enumerate(rangliste, start=1):
+        print(f"Platz {platz}: {spieler.get_name()}")
+    print("Spiel beendet. Vielen Dank fürs Spielen!")
 
              
 
@@ -145,11 +166,14 @@ def draw_card(spielkarten_anzahl):
         new_stapel.draw_cards(nutzer,spielkarten_anzahl)
 
 def game_start():
-    anzahl_spielkarten = int(input("Spielkartenanzahl: \n"))-1
+    anzahl_spielkarten = int(input("Anzahl der Startkarten pro Spieler: "))
     if len(arten) * len(werte) < (anzahl_spielkarten * len(user)) + 1:
-        print(f"E R R O R\n Zu wenig Karten im Spielblatt")
-        game_start()
+        print("E R R O R: Zu wenig Karten im Deck.")
+        return game_start()
 
+    print("\nKarten werden verteilt...")
+    t.sleep(2)
+    first_austeilen(anzahl_spielkarten)
         
         
 

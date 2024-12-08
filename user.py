@@ -20,6 +20,9 @@ class User():
     def get_possible_cards(self):
         return self.possible_cards
     
+    def remove_possible_card(self,card):
+        self.possible_cards.remove(card)
+    
     def add_card(self,card):
         self.hand.append(card)
 
