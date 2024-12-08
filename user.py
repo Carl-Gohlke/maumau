@@ -17,7 +17,7 @@ class User():
     def possible_cards_append(self,card):
         self.possible_cards.append(card)
 
-    def get_possbile_cards(self):
+    def get_possible_cards(self):
         return self.possible_cards
     
     def add_card(self,card):

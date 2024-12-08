@@ -3,6 +3,7 @@ from karten import *
 from user import *
 import time as t
 
+
 #predefinitionen
 
 arten = ['Herz','Karo','Pik','Kreuz']
@@ -31,7 +32,7 @@ def game():
                     user[i].possible_cards_clear()
                     for karte in user[i].get_hand():
                         karte.karte_check(new_stapel,user[i])
-                    if len(user[i].get_possbile_cards()) == 0:
+                    if len(user[i].get_possible_cards()) == 0:
                         new_stapel.draw_cards(user[i],1)
                         print("Du kannst keine Karte legen.\nDu hast eine Karte gezogen.\nDer nächste Spieler ist dran.")
                         user[i].set_passive()
@@ -41,13 +42,14 @@ def game():
                             print(o.get_kartenname())
                         print("Du kannst folgende Karten legen:\n")
                         counter = 1
-                        for b in user[i].get_possbile_cards():
+                        for b in user[i].get_possible_cards():
                             print(f"Nr.{counter} {b.get_kartenname()}")
                             counter +=1
                         user[i].choosecard(new_stapel)
                         if len(user[i].get_hand()) == 0:
                             rangliste.append(user[i])
-                            user.remove(user[i])
+                            user.pop(i)
+                            i -= 1
                 else:
                     user[i].set_passive()
                     new_stapel.set_active_effect(None)
@@ -59,7 +61,7 @@ def game():
                 user[i].possible_cards_clear()
                 for karte in user[i].get_hand():
                     karte.karte_check(new_stapel,user[i])
-                if len(user[i].get_possbile_cards()) == 0:
+                if len(user[i].get_possible_cards()) == 0:
                     new_stapel.draw_cards(user[i],sieben*2)
                     print(f"Du hast keine 7 du musst {sieben*2} Karten ziehen.")
                     user[i].set_passive()
@@ -70,7 +72,7 @@ def game():
                         print(o.get_kartenname())
                     print("Du kannst folgende Karten legen:\n")
                     counter = 1
-                    for b in user[i].get_possbile_cards():
+                    for b in user[i].get_possible_cards():
                         print(f"Nr.{counter} {b.get_kartenname()}")
                         counter +=1
                     user[i].choosecard(new_stapel)
@@ -91,8 +93,8 @@ def game():
     if len(user) <= 1:
         rangliste.append(user[0])
         print("Das Spiel ist zu Ende.")
-        for c in range(0,len(rangliste)):
-            print(f"Platz: {c+1}) rangliste{c}")
+        for c in range(len(rangliste)):
+            print(f"Platz {c+1}: {rangliste[c].get_name()}")
 
             
 
@@ -114,6 +116,7 @@ def gen_karten():
                 new_specialcard = Spezialkarte(art,wert,kartenname,'d')
                 deck.append(new_specialcard)
             else:
+                kartenname = art + " " + wert
                 new_card = Karte(art,wert,kartenname)
                 deck.append(new_card)
 
@@ -131,7 +134,7 @@ def gen_user(player_count):
 
 def first_austeilen(spielkarten_anzahl):
     for nutzer in user:
-        new_stapel.frist_draw_cards(nutzer,spielkarten_anzahl)
+        new_stapel.first_draw_cards(nutzer,spielkarten_anzahl)
     new_stapel.first_card_down()
     game()
 
@@ -143,11 +146,9 @@ def draw_card(spielkarten_anzahl):
 
 def game_start():
     anzahl_spielkarten = int(input("Spielkartenanzahl: \n"))-1
-    if len(arten) * len(werte) <= anzahl_spielkarten * len(user):
-        print(f"E R R O R\n Zu wenig Karten im Spielblatt\nJeder Spieler kann maximl {int(31/len(user))} Karten haben")
+    if len(arten) * len(werte) < (anzahl_spielkarten * len(user)) + 1:
+        print(f"E R R O R\n Zu wenig Karten im Spielblatt")
         game_start()
-    else: 
-        first_austeilen(anzahl_spielkarten)
 
         
         
