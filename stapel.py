@@ -1,3 +1,4 @@
+#made by carl
 from karten import *
 import random as r
 class Ziehstapel():

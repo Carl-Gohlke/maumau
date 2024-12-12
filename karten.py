@@ -1,3 +1,4 @@
+#made by carl
 from stapel import *
 from user import *
 class Karte():
@@ -14,9 +15,8 @@ class Karte():
 
     
     def karte_check(self,stapel,user):
-        if stapel.get_active() == 'd':
+        if stapel.last_card().get_wert() == '7' and stapel.get_active() == 'd':
             if self.wert == '7':
-                print(self.kartenname)
                 user.possible_cards_append(self)
         elif stapel.get_active() == 's':
             stapel.set_active_effect(None)
