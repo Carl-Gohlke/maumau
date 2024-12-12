@@ -38,7 +38,7 @@ def game():
             else:
                 sieben = 0
 
-            if new_stapel.get_active() == 'd':
+            if new_stapel.last_card().get_wert() == '7':
                 user[i].possible_cards_clear()
                 karte.karte_check(new_stapel, user[i])
 
@@ -48,7 +48,7 @@ def game():
                     new_stapel.set_active_effect(None)
                     user[i].set_passive()
                     t.sleep(2)
-                    continue
+                    break
 
             elif new_stapel.get_active() == 'a':
                 print("Du musst aussetzen.")
